@@ -7,24 +7,18 @@ import style from './RegisterForm.module.css';
 const RegisterForm = () => {
     const [value, setValue] = useState({email: '', password: '', confirmPassword: ''});
     const [error, setError] = useState({});
-
+    const isValid = Object.keys(error).length === 0;
     const submitButtonRef = useRef(null);
 
     const handleChange = (event) => {
         const { target } = event;
         setValue((prevState) => ({...prevState, [target.name]: target.value}));
-
-        if (Object.keys(error).length === 0) {
-            submitButtonRef.current.focus();
-        };
     }
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(value);
     }
-
-    const isValid = Object.keys(error).length === 0;
 
     const validateSchema = {
         email: {
@@ -58,8 +52,14 @@ const RegisterForm = () => {
         setError(error);
     }, [value]);
 
+    useEffect(() => {
+        if (Object.keys(error).length === 0) {
+            submitButtonRef.current.focus();
+        };
+    }, [error]);
+
 	return (
-		<div className={style.RegisterForm}>
+		<div className={style.Wrapper}>
 			<h1 className={style.Title}>Sign Up</h1>
 			<form onSubmit={handleSubmit}>
 				<RegisterInput
@@ -86,7 +86,7 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     error={error.confirmPassword}
                 />
-                <button type='submit' ref={submitButtonRef} disabled={!isValid}>Sign Up</button>
+                <button className={style.Button} type='submit' ref={submitButtonRef} disabled={!isValid}>Sign Up</button>
 			</form>
 		</div>
 	);

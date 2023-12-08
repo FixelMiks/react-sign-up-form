@@ -1,0 +1,35 @@
+.Wrapper {
+	width: 550px;
+	height: 550px;
+	padding: 50px;
+	border: 1px solid #c0c0c0;
+	border-radius: 5px;
+	background-color: #ffffff;
+}
+
+.Title {
+	margin-top: 0;
+	font-size: calc(20px + 2vmin);
+}
+
+.Button {
+	width: 100%;
+	margin-top: 18px;
+	padding: 0.5rem 0.75rem;
+	border: none;
+	border-radius: 5px;
+	outline: none;
+	color: #ffffff;
+	background-color: #0077c5;
+	cursor: pointer;
+}
+
+.Button:focus {
+	box-shadow: 0 0 0.2rem 0.2rem rgba(0, 119, 197, 0.25);
+}
+
+.Button:disabled {
+	color: #eceef1;
+	background-color: #8998ff;
+	cursor: not-allowed;
+}

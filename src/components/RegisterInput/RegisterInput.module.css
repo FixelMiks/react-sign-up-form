@@ -1,0 +1,30 @@
+.Wrapper {
+	display: flex;
+	flex-direction: column;
+	text-align: left;
+	height: 120px;
+	margin-bottom: 20px;
+}
+
+.Label {
+	font-weight: 700;
+	margin-bottom: 10px;
+}
+
+.Input {
+	width: 100%;
+	margin-bottom: 10px;
+	padding: 0.375rem 0.75rem;
+	border: 1px solid #c0c0c0;
+	border-radius: 5px;
+	outline: none;
+	transition: box-shadow 0.2s ease-in-out;
+}
+
+.Input:focus {
+	box-shadow: 0 0 0.2rem 0.2rem rgba(0, 119, 197, 0.25);
+}
+
+.Error {
+	color: #ff3131;
+}
