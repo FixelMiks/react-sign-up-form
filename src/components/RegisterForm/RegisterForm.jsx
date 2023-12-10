@@ -12,7 +12,7 @@ const RegisterForm = () => {
 
     const handleChange = (event) => {
         const { target } = event;
-        setValue((prevState) => ({...prevState, [target.name]: target.value}));
+        setValue((prevState) => ({...prevState, [target.name]: target.value}));     
     }
 
     const handleSubmit = (event) => {
@@ -20,36 +20,27 @@ const RegisterForm = () => {
         console.log(value);
     }
 
-    const validateSchema = {
-        email: {
-            isEmail: {
-                message: 'Email is invalid',
-            },
-            isRequired: {
-                message: 'Email is required',
-            },
-        },
-        password: {
-            isLength: {
-                message: 'Password must be at least 6 characters long'
-            },
-            isRequired: {
-                message: 'Password is required'
-            }
-        },
-        confirmPassword: {
-            isMatch: {
-                message: 'Password mismatch'
-            },
-            isRequired: {
-                message: 'Confirm password is required'
-            }
-        }
-    };
-
     useEffect(() => {
-        const error = validate(value, validateSchema);
-        setError(error);
+        validate
+            .validate(value, {abortEarly: false})
+            .then(() => {
+                setError({});
+            })
+            .catch((errors) => {
+                const parseError = (errObj) => {
+                    const {inner} = errObj;
+                    return inner.reduce((acc, err) => {
+                        const {path, message} = err;
+                        return {
+                            ...acc,
+                            [path]: message
+                        }
+                    }, {})
+                }
+
+                const newError = parseError(errors)
+                setError(newError)        
+            });
     }, [value]);
 
     useEffect(() => {
