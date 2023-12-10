@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-export const validate = yup.object({
+export const validateSchema = yup.object({
 	email: yup
 		.string()
 		.matches(

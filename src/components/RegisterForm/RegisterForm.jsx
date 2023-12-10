@@ -1,83 +1,82 @@
 import React from 'react';
-import { useState, useEffect, useRef } from 'react';
-import RegisterInput from '../RegisterInput/RegisterInput';
-import { validate } from '../../utils/validate';
+import { useEffect, useRef } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { validateSchema } from '../../utils/validateSchema';
 import style from './RegisterForm.module.css';
 
 const RegisterForm = () => {
-    const [value, setValue] = useState({email: '', password: '', confirmPassword: ''});
-    const [error, setError] = useState({});
-    const isValid = Object.keys(error).length === 0;
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            email: '',
+            password: '',
+            confirmPassword: ''
+        },
+        resolver: yupResolver(validateSchema),
+    });
+    const emailError = errors.email?.message;
+    const passwordError = errors.password?.message;
+    const confirmPasswordError = errors.confirmPassword?.message;
+
+    const onSubmit = (formData) => {
+        console.log(formData);
+    }
+
     const submitButtonRef = useRef(null);
 
-    const handleChange = (event) => {
-        const { target } = event;
-        setValue((prevState) => ({...prevState, [target.name]: target.value}));     
-    }
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log(value);
-    }
-
     useEffect(() => {
-        validate
-            .validate(value, {abortEarly: false})
-            .then(() => {
-                setError({});
-            })
-            .catch((errors) => {
-                const parseError = (errObj) => {
-                    const {inner} = errObj;
-                    return inner.reduce((acc, err) => {
-                        const {path, message} = err;
-                        return {
-                            ...acc,
-                            [path]: message
-                        }
-                    }, {})
-                }
-
-                const newError = parseError(errors)
-                setError(newError)        
-            });
-    }, [value]);
-
-    useEffect(() => {
-        if (Object.keys(error).length === 0) {
+        if (Object.keys(errors).length === 0) {
             submitButtonRef.current.focus();
         };
-    }, [error]);
+    }, [errors]);
+    
+    const isValid = Object.keys(errors).length === 0;
 
 	return (
 		<div className={style.Wrapper}>
 			<h1 className={style.Title}>Sign Up</h1>
-			<form onSubmit={handleSubmit}>
-				<RegisterInput
-                    name='email'
-                    type='email'
-                    placeholder='email'
-                    value={value.name}
-                    onChange={handleChange}
-                    error={error.email}
-                />
-				<RegisterInput
-                    name='password'
-                    type='password'
-                    placeholder='password'
-                    value={value.name}
-                    onChange={handleChange}
-                    error={error.password}
-                />
-				<RegisterInput
-                    name='confirmPassword'
-                    type='password'
-                    placeholder='confirm password'
-                    value={value.name}
-                    onChange={handleChange}
-                    error={error.confirmPassword}
-                />
-                <button className={style.Button} type='submit' ref={submitButtonRef} disabled={!isValid}>Sign Up</button>
+			<form onSubmit={handleSubmit(onSubmit)}>
+                <div className={style.Input__wrapper}>
+                    <label className={style.Label} htmlFor='email'>Email: </label>
+                    <input
+                        className={style.Input}
+                        id='email'
+                        name='email'
+                        type='email'
+                        placeholder='email'
+                        {...register('email')}
+                    />
+                    {emailError && <span className={style.Error}>{emailError}</span>}
+                </div>
+                <div className={style.Input__wrapper}>
+                    <label className={style.Label} htmlFor='password'>Password: </label>
+                    <input
+                        className={style.Input}
+                        id='password'
+                        name='password'
+                        type='password'
+                        placeholder='password'
+                        {...register('password')}
+                    />
+                    {passwordError && <span className={style.Error}>{passwordError}</span>}
+                </div>
+                <div className={style.Input__wrapper}>
+                    <label className={style.Label} htmlFor='email'>Confirm password: </label>
+                    <input
+                        className={style.Input}
+                        id='confirmPassword'
+                        name='confirmPassword'
+                        type='password'
+                        placeholder='confirmPassword'
+                        {...register('confirmPassword')}
+                    />
+                    {confirmPasswordError && <span className={style.Error}>{confirmPasswordError}</span>}
+                </div>
+                <button className={style.Button} type='submit' disabled={!isValid} ref={submitButtonRef}>Sign Up</button>
 			</form>
 		</div>
 	);
